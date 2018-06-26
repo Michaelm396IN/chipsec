@@ -30,6 +30,7 @@
 """
 Logging functions
 """
+import coloredlogs
 import logging as pyLogging
 import coloredlogs
 import platform
@@ -66,6 +67,7 @@ LOG_PATH                = os.path.join( os.getcwd(), "logs" )
 #
 # Colored output
 #
+
 if "windows" == platform.system().lower():
 
     try:
@@ -115,8 +117,8 @@ elif "linux" == platform.system().lower():
         PURPLE = 5
         CYAN   = 6
         WHITE  = 7
-        NORMAL = 8
-
+        NORMAL = 8     
+        
         def log_test(self):
             print("{}BOLD{}".format(ColorLogger.BOLD,ColorLogger.ENDC))
             print("{}UNDERLINE{}".format(ColorLogger.UNDERLINE,ColorLogger.ENDC))
@@ -133,19 +135,75 @@ elif "linux" == platform.system().lower():
             return ( '\033[%im%s%s'%(color_type+color,str(msg),ColorLogger.ENDC))
 
     COLOR_ID = {
-      BLACK  : ColorLogger.NORMAL,
-      RED    : ColorLogger.RED,
-      GREEN  : ColorLogger.GREEN,
-      YELLOW : ColorLogger.YELLOW,
-      BLUE   : ColorLogger.BLUE,
-      MAGENTA: ColorLogger.PURPLE,
-      CYAN   : ColorLogger.CYAN,
-      WHITE  : ColorLogger.WHITE
-      }
+    BLACK  : 'black',
+    RED    : 'red',
+    GREEN  : 'green',
+    YELLOW : 'yellow',
+    BLUE   : 'blue',
+    MAGENTA: 'purple',
+    CYAN   : 'cyan',
+    WHITE  : 'white'
+    }
+
+    COLOR_ID = {
+    BLACK  : 'black',
+    RED    : 'red',
+    GREEN  : 'green',
+    YELLOW : 'yellow',
+    BLUE   : 'blue',
+    MAGENTA: 'purple',
+    CYAN   : 'cyan',
+    WHITE  : 'white'
+    }
+
+    DEFAULT_LEVEL_STYLES = dict(
+        GREEN=dict(color='green'),
+        BLUE=dict(color='blue'),
+        MAGENTA=dict(color='magenta'),
+        YELLOW=dict(color='yellow'),
+        RED=dict(color='red'),)
 
     def log_color( fg_color, text ):
-        _text = ColorLogger.format(text, ColorLogger.LIGHT,COLOR_ID[ fg_color ])
-        print("{}".format(_text))
+        pyLogging.getLogger(__name__)
+        coloredlogs.install(fmt='%(message)s',
+                                level_styles={
+                                'warning': {
+                                    'color': 'yellow'
+                                },
+                                'error': {
+                                    'color': 'red'
+                                },
+                                'critical': {
+                                    'color': 'blue',
+                                },                                                        
+                                'debug': {
+                                    'color': 'green',
+                                }})
+        if fg_color == YELLOW:
+            pyLogging.warn(text)                        
+        elif fg_color == RED:
+            pyLogging.error(text)
+        elif fg_color == BLUE:
+            pyLogging.critical(text)
+        elif fg_color == GREEN:
+            pyLogging.debug
+
+        #print("HEYYYYYYYYYYYYYY!")
+        #stream = pyLogging.StreamHandler()
+        #stream.setFormatter(formatter)
+        #
+        #LOG.addHandler(stream)
+        
+        #coloredlogs.install(format = (""),
+        #                    isatty = True,
+        #                    level_styles = ColorLogger.DEFAULT_LEVEL_STYLES
+        #                    )
+        #LOG.info(text)
+        #pyLogging.basicConfig(stream=sys.stderr,
+        #                        format=("")
+        #                        )    
+        #pyLogging.getLogger(__name__)                
+        #pyLogging.info(text)
 
 else:
     def log_color( fg_color, text ):
