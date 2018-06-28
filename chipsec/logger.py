@@ -145,22 +145,26 @@ elif "linux" == platform.system().lower():
     WHITE  : 'white'
     }
 
+    coloredlogs.DEFAULT_LEVEL_STYLES = dict(
+    spam=dict(color='green', faint=True),
+    debug=dict(color='green'),
+    verbose=dict(color='blue'),
+    info=dict(),
+    notice=dict(color='magenta'),
+    warning=dict(color='yellow'),
+    success=dict(color='green', bold=coloredlogs.CAN_USE_BOLD_FONT),
+    error=dict(color='red'),
+    critical=dict(color='red', bold=coloredlogs.CAN_USE_BOLD_FONT))
+    """Mapping of log level names to default font styles."""
+
     def log_color( fg_color, text ):
-        pyLogging.getLogger(__name__) 
-        coloredlogs.install(fmt='%(message)s',
-                                level_styles={
-                                'warning': {
-                                    'color': 'yellow'
-                                },
-                                'error': {
-                                    'color': 'red'
-                                },
-                                'critical': {
-                                    'color': 'blue',
-                                },                                                        
-                                'debug': {
-                                    'color': 'green',
-                                }})
+        #pyLogging.getLogger(__name__) 
+        logFormatter =("%(message)s")
+        formatter = coloredlogs.ColoredFormatter(logFormatter)
+        coloredlogs.ColoredFormatter
+        coloredlogs.install(fmt='%(message)s')
+        
+        
         if fg_color == YELLOW:
             pyLogging.warn(text)                        
         elif fg_color == RED:
@@ -169,6 +173,7 @@ elif "linux" == platform.system().lower():
             pyLogging.critical(text)
         elif fg_color == GREEN:
             pyLogging.debug
+        
 
 else:
     def log_color( fg_color, text ):
